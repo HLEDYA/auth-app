@@ -37,7 +37,7 @@ const AuthForm = () => {
       body: JSON.stringify({
         email: enteredEmail,
         password: enteredPwd,
-        returnedSecureToken: true,
+        returnSecureToken: true,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -56,8 +56,10 @@ const AuthForm = () => {
         }
       })
       .then((data) => {
-        console.log(data);
-        authCtx.login(data.idToken);
+        const expirationTime = new Date(
+          new Date().getTime() + +data.expiresIn * 1000
+        );
+        authCtx.login(data.idToken, expirationTime.toISOString());
         history.replace("/");
       })
       .catch((err) => {
